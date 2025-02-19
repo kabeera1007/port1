@@ -219,16 +219,39 @@
   </div>
 
     <!-- Contact Form Card -->
-    <div class="contact-card" data-aos="fade-left">
-      <h2>Get in Touch</h2>
-      <form class="contact-form" method="POST" action="https://formspree.io/f/mzzdykkn">
+<div class="contact-card" data-aos="fade-left">
+    <h2>Get in Touch</h2>
+    <form class="contact-form" id="contactForm">
         <input type="text" name="name" placeholder="Your Name" required>
         <input type="email" name="email" placeholder="Your Email" required>
         <textarea name="message" placeholder="Your Message" required></textarea>
         <button type="submit">Send Message</button>
-      </form>
-    </div>
-  </section>
+    </form>
+    <p id="thankYouMessage" style="display: none; color: green; margin-top: 10px;">
+        ✅ Thank you! We will reach out to you shortly.
+    </p>
+</div>
+
+<script>
+  document.getElementById("contactForm").addEventListener("submit", async function(event) {
+    event.preventDefault();  // Prevent default form submission
+
+    let formData = new FormData(this);
+    let response = await fetch("https://formspree.io/f/mzzdykkn", {
+      method: "POST",
+      body: formData,
+      headers: { "Accept": "application/json" }
+    });
+
+    if (response.ok) {
+      document.getElementById("contactForm").style.display = "none";  // Hide form
+      document.getElementById("thankYouMessage").style.display = "block";  // Show message
+    } else {
+      alert("❌ Error sending message. Please try again later.");
+    }
+  });
+</script>
+
 
   <footer>
     &copy; 2025 Kuldeep Parmar | Powered by Passion & Data
