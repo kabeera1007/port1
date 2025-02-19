@@ -215,26 +215,27 @@
       <p>📞 Phone : (+49) 15510246228</p>
       <p>🏠 Address : Berlin, Germany</p>
       <p>🐙 GitHub : <a href="https://github.com/kabeera1007" target="_blank" style="color: white;">github.com/kabeera1007</a></p>
-      <p>📧 Email Address : <a href="mailto:way2mahadev@gmail.com" target="_blank" style="color: white;">way2mahadev@gmail.com </a></p>
-  </div>
+      <p>📧 Email Address : <a href="mailto:way2mahadev@gmail.com" target="_blank" style="color: white;">way2mahadev@gmail.com</a></p>
+    </div>
 
     <!-- Contact Form Card -->
-<div class="contact-card" data-aos="fade-left">
-    <h2>Get in Touch</h2>
-    <form class="contact-form" id="contactForm">
-        <input type="text" name="name" id="name" placeholder="Your Name" required>
-        <input type="email" name="email" id="email" placeholder="Your Email" required>
-        <textarea name="message" id="message" placeholder="Your Message" required></textarea>
-        <button type="submit">Send Message</button>
-    </form>
-    <p id="thankYouMessage" style="display: none; color: green; margin-top: 10px;">
-        ✅ Thank you! We will reach out to you shortly.
-    </p>
-</div>
+    <div class="contact-card" data-aos="fade-left">
+        <h2>Get in Touch</h2>
+        <form class="contact-form" id="contactForm">
+            <input type="text" name="name" id="name" placeholder="Your Name" required>
+            <input type="email" name="email" id="email" placeholder="Your Email" required>
+            <textarea name="message" id="message" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+        <p id="thankYouMessage" style="display: none; color: green; margin-top: 10px;">
+            ✅ Thank you! We will reach out to you shortly.
+        </p>
+    </div>
+</section>
 
 <script>
   document.getElementById("contactForm").addEventListener("submit", async function(event) {
-    event.preventDefault();  // Prevent default form submission
+    event.preventDefault();  // Stop default form submission (prevents page change)
 
     let formData = {
       name: document.getElementById("name").value,
@@ -253,16 +254,13 @@
       });
 
       if (response.ok) {
-        document.getElementById("contactForm").reset();  // Clear form fields
+        document.getElementById("contactForm").reset();  // Clear input fields
         document.getElementById("contactForm").style.display = "none";  // Hide form
         document.getElementById("thankYouMessage").style.display = "block";  // Show success message
       } else {
-        let errorData = await response.json();
-        console.error("❌ Form submission error:", errorData);
         alert("❌ Error sending message. Please try again later.");
       }
     } catch (error) {
-      console.error("❌ Network error:", error);
       alert("❌ Network error. Please check your internet connection.");
     }
   });
