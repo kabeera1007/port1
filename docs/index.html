@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unleashing the Power of Data</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
+
+  <!-- AOS (Animate on Scroll) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  
+  <!-- Custom Styling -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    /* NAVIGATION */
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 50px;
+      align-items: center;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+    }
+    .nav-links li {
+      margin: 0 15px;
+    }
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #ff5733;
+    }
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .hero-content {
+      z-index: 2;
+      max-width: 800px;
+    }
+    .hero h1 {
+      font-size: 50px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff5733, #ffcc33);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 18px;
+      color: #fff;
+      background: #ff5733;
+      border: none;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 4px 15px rgba(255, 81, 47, 0.6);
+    }
+    /* ORIGINAL FLOATING ELEMENTS (inside hero) */
+    .floating {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      animation: float 5s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .floating:nth-child(1) { top: 10%; left: 5%; animation-duration: 6s; }
+    .floating:nth-child(2) { top: 60%; left: 80%; animation-duration: 8s; }
+    .floating:nth-child(3) { top: 30%; right: 10%; animation-duration: 7s; }
+    /* BUBBLE SKILLS CONTAINER */
+    .bubble-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 500; /* below header */
+    }
+    /* Skill Bubble Style: Round & more transparent */
+    .bubble {
+      position: absolute;
+      background: rgba(255, 87, 51, 0.2); /* lowered opacity */
+      border: 2px solid rgba(255, 204, 51, 0.2);
+      border-radius: 50%;
+      padding: 15px;
+      color: #fff;
+      font-size: 12px;
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0;
+      /* Ensure the initial keyframe is applied immediately */
+      animation-fill-mode: both;
+    }
+    /* Adjusted keyframes for skill bubbles (visible window shortened) */
+    @keyframes bubbleFromTop {
+      0% {
+        top: -50px;
+        transform: scale(0.5);
+        opacity: 0.5;
+      }
+      20% {
+        top: 20%;
+        transform: scale(1);
+        opacity: 1;
+      }
+      30% {
+        top: 30%;
+        transform: scale(1);
+        opacity: 0;
+      }
+      100% {
+        top: 30%;
+        opacity: 0;
+      }
+    }
+    @keyframes bubbleFromBottom {
+      0% {
+        top: 110%;
+        transform: scale(0.5);
+        opacity: 0.5;
+      }
+      20% {
+        top: 80%;
+        transform: scale(1);
+        opacity: 1;
+      }
+      30% {
+        top: 70%;
+        transform: scale(1);
+        opacity: 0;
+      }
+      100% {
+        top: 70%;
+        opacity: 0;
+      }
+    }
+    @keyframes bubbleFromLeft {
+      0% {
+        left: -120px;
+        transform: scale(0.5);
+        opacity: 0.5;
+      }
+      20% {
+        left: 20%;
+        transform: scale(1);
+        opacity: 1;
+      }
+      30% {
+        left: 30%;
+        transform: scale(1);
+        opacity: 0;
+      }
+      100% {
+        left: 30%;
+        opacity: 0;
+      }
+    }
+    @keyframes bubbleFromRight {
+      0% {
+        right: -120px;
+        transform: scale(0.5);
+        opacity: 0.5;
+      }
+      20% {
+        right: 20%;
+        transform: scale(1);
+        opacity: 1;
+      }
+      30% {
+        right: 30%;
+        transform: scale(1);
+        opacity: 0;
+      }
+      100% {
+        right: 30%;
+        opacity: 0;
+      }
+    }
+    /* Assign slower animations with staggered delays so only 5-7 bubbles are visible at a time */
+    .bubble:nth-child(1)  { animation: bubbleFromTop 30s infinite; animation-delay: 0s; left: 10%; }
+    .bubble:nth-child(2)  { animation: bubbleFromBottom 30s infinite; animation-delay: 4s; left: 20%; }
+    .bubble:nth-child(3)  { animation: bubbleFromLeft 30s infinite; animation-delay: 8s; top: 30%; }
+    .bubble:nth-child(4)  { animation: bubbleFromRight 30s infinite; animation-delay: 12s; top: 40%; }
+    .bubble:nth-child(5)  { animation: bubbleFromTop 30s infinite; animation-delay: 16s; left: 15%; }
+    .bubble:nth-child(6)  { animation: bubbleFromBottom 30s infinite; animation-delay: 20s; left: 25%; }
+    .bubble:nth-child(7)  { animation: bubbleFromLeft 30s infinite; animation-delay: 24s; top: 35%; }
+    .bubble:nth-child(8)  { animation: bubbleFromRight 30s infinite; animation-delay: 28s; top: 45%; }
+    .bubble:nth-child(9)  { animation: bubbleFromTop 30s infinite; animation-delay: 2s; left: 30%; }
+    .bubble:nth-child(10) { animation: bubbleFromBottom 30s infinite; animation-delay: 6s; left: 35%; }
+    .bubble:nth-child(11) { animation: bubbleFromLeft 30s infinite; animation-delay: 10s; top: 50%; }
+    .bubble:nth-child(12) { animation: bubbleFromRight 30s infinite; animation-delay: 14s; top: 55%; }
+    .bubble:nth-child(13) { animation: bubbleFromTop 30s infinite; animation-delay: 18s; left: 40%; }
+    .bubble:nth-child(14) { animation: bubbleFromBottom 30s infinite; animation-delay: 22s; left: 45%; }
+    .bubble:nth-child(15) { animation: bubbleFromLeft 30s infinite; animation-delay: 26s; top: 60%; }
+    .bubble:nth-child(16) { animation: bubbleFromRight 30s infinite; animation-delay: 30s; top: 65%; }
+    .bubble:nth-child(17) { animation: bubbleFromTop 30s infinite; animation-delay: 3s; left: 50%; }
+    .bubble:nth-child(18) { animation: bubbleFromBottom 30s infinite; animation-delay: 7s; left: 55%; }
+    .bubble:nth-child(19) { animation: bubbleFromLeft 30s infinite; animation-delay: 11s; top: 70%; }
+    .bubble:nth-child(20) { animation: bubbleFromRight 30s infinite; animation-delay: 15s; top: 75%; }
+    /* ROUND DECORATIVE BUBBLES (Small, transparent, round) */
+    .round-bubble {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      opacity: 0;
+      animation: roundBubble 32s infinite;
+      animation-fill-mode: both;
+    }
+    @keyframes roundBubble {
+      0% {
+        transform: translate(0, 0) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        transform: translate(20px, -20px) scale(1);
+        opacity: 0.2;
+      }
+      100% {
+        transform: translate(20px, -20px) scale(1);
+        opacity: 0;
+      }
+    }
+    /* Position and timing for 7 round bubbles */
+    .round-bubble:nth-of-type(1) { left: 5%; top: 80%; animation-delay: 0s; }
+    .round-bubble:nth-of-type(2) { left: 80%; top: 10%; animation-delay: 2s; }
+    .round-bubble:nth-of-type(3) { left: 50%; top: 90%; animation-delay: 4s; }
+    .round-bubble:nth-of-type(4) { left: 30%; top: 20%; animation-delay: 3s; }
+    .round-bubble:nth-of-type(5) { left: 70%; top: 60%; animation-delay: 1s; }
+    .round-bubble:nth-of-type(6) { left: 40%; top: 50%; animation-delay: 5s; }
+    .round-bubble:nth-of-type(7) { left: 90%; top: 70%; animation-delay: 3.5s; }
+    /* FOOTER (unchanged) */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVIGATION -->
+  <header>
+    <div class="logo">Kuldeep Parmar</div>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About Me</a></li>
+      <li><a href="/projects">Projects</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </header>
+  
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Unleashing the Power of Data</h1>
+      <p>Transforming Ideas and Information into Reality with Cutting-Edge Technology and Wisdom.</p>
+      
+    </div>
+    <div class="floating"></div>
+    <div class="floating"></div>
+    <div class="floating"></div>
+  </section>
+
+  <section class="story-section">
+    <div class="card" data-aos="fade-up">
+      <h2>Why Do We Need Data Experts?</h2>
+      <p>
+        The world is overflowing with data and advance technology. To make the most use of it,  
+        we need experts who can analyze and interpret data effectively.  
+        <p>Distinguishing the signal from the noise</strong> requires both  
+        scientific knowledge and self-knowledge.  
+        <strong>the serenity to accept the things we cannot predict, and the courage to predict the things we can,</strong> is  
+        crucial for making informed decisions.  </p>
+        <br>
+        Lastly, it takes wisdom to recognize the difference between what we can predict and what we cannot that shapes our future.
+      </p>
+      <img src="{{ url_for('static', filename='why.jpg') }}" alt="Data Experts" class="card-img" >
+    </div>      
+    <div class="card" data-aos="fade-up" data-aos-delay="100">
+      <h2>What makes me apart from the rest?</h2>
+      <p>"My journey didn’t just start with data, it began with curiousity to know life and cosmos. while travelling through the <strong>sacred spaces</strong> of mountains and jungles, where life’s <strong>raw mysteries</strong> shaped my perspective."</p>
+      <p>"Travelling for over 7 years, I developed <strong>resilience</strong>, <strong>patience</strong>, and a deep understanding of patterns, both in nature and in information around us."</p>
+      <p>"My journey have molded me into an explorer of both life and data, anchored by a strong <strong>ethical foundation</strong> guiding every step."</p>
+      <img src="{{ url_for('static', filename='GYny.gif') }}" alt="Unique Perspective" class="card-img">
+    </div>
+    
+    <div class="card" data-aos="fade-up" data-aos-delay="200">
+      <h2>How will I help You?</h2>
+<p>"My approach to data is driven by a deep curiosity to explore, understand, and address real-world challenges. With extensive expertise in <strong>ETL, cloud computing, data science, and machine learning</strong>, I take a strategic and purposeful approach to each data challenge."</p>
+<p>"Whether it’s transforming raw data, deploying cloud solutions, or solving complex problems with machine learning, I leverage advanced tools such as <strong>Git, Docker, Terraform, Spark, Airflow, dbt, AWS, GCP, Tableau, SQL, Python</strong>, and more to craft impactful, sustainable solutions."</p>
+<p>"The future of decision-making hinges on how well we understand and leverage data. Together, we can unlock its potential and shape a <strong>smarter, more data-driven future</strong>."</p>
+      <img src="{{ url_for('static', filename='how.jpg') }}" alt="Helping with Data" class="card-img">
+      <div style="margin-top: 20px;"></div>
+      <a href="/projects" class="btn">Some of my works.</a>
+    </div>
+    
+    <div class="card" data-aos="fade-up" data-aos-delay="300">
+      <h2>Let's join the journey together!</h2>
+      <p>"Let's embark on this journey together. With the world flooded by data and advancing technology, we have the power to make sense of it and shape the future. Reach out, and let’s create something extraordinary."</p>
+      <img src="{{ url_for('static', filename='offer.png') }}" alt="Opportunity" class="card-img">
+      <div style="margin-top: 20px;"></div>
+      <a href="/contact" class="btn">Let’s Collaborate</a>
+    </div>
+  </section>
+
+  <style>
+    .story-section {
+      padding: 50px 20px;
+      background: rgba(15, 15, 15, 0.9); /* Adding a subtle background color */
+    }
+    .card {
+      width: 80%; /* Reduced width by 30% */
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto; /* Centering the card horizontally */
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 10px 20px rgba(255, 87, 51, 0.5);
+    }
+    .card h2 {
+      font-size: 30px; /* Reduced font size */
+      font-weight: bold;
+      background: linear-gradient(90deg, #ff5733, #ffcc33);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .card p {
+      font-size: 16px; /* Reduced font size */
+      line-height: 1.6;
+      color: #fff;
+    }
+    .card-img {
+      margin-top: 20px;
+      border-radius: 10px;
+      width: 350px; /* Reduced image size */
+      height: 250px; /* Reduced image size */
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+  </style>
+<!-- Add this script before the closing </body> tag -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.card');
+      let lastVisibleIndex = 0;
+
+      window.addEventListener('scroll', function() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        cards.forEach((card, index) => {
+          const cardTop = card.offsetTop;
+          if (scrollTop >= cardTop - window.innerHeight / 2) {
+            cards[lastVisibleIndex].classList.add('hidden');
+            lastVisibleIndex = index;
+            card.classList.remove('hidden');
+          }
+        });
+      });
+
+      cards.forEach((card, index) => {
+        card.addEventListener('mouseenter', function() {
+          if (index > lastVisibleIndex) {
+            cards[lastVisibleIndex].classList.add('hidden');
+            lastVisibleIndex = index;
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- BUBBLE SKILLS (Fixed Floating Cards) & ROUND BUBBLES -->
+  <div class="bubble-container">
+    <!-- 20 Skill Bubbles -->
+    <div class="bubble">Neural Networks</div>
+    <div class="bubble">AI</div>
+    <div class="bubble">Machine Learning</div>
+    <div class="bubble">Deep Learning</div>
+    <div class="bubble">TensorFlow</div>
+    <div class="bubble">PyTorch</div>
+    <div class="bubble">NLP</div>
+    <div class="bubble">Computer Vision</div>
+    <div class="bubble">Data Science</div>
+    <div class="bubble">Big Data</div>
+    <div class="bubble">SQL</div>
+    <div class="bubble">NoSQL</div>
+    <div class="bubble">Cloud Computing</div>
+    <div class="bubble">AWS</div>
+    <div class="bubble">GCP</div>
+    <div class="bubble">Azure</div>
+    <div class="bubble">Docker</div>
+    <div class="bubble">Kubernetes</div>
+    <div class="bubble">Terraform</div>
+    <div class="bubble">DevOps</div>
+    <!-- 7 Decorative Round Bubbles -->
+    <div class="round-bubble"></div>
+    <div class="round-bubble"></div>
+    <div class="round-bubble"></div>
+    <div class="round-bubble"></div>
+    <div class="round-bubble"></div>
+    <div class="round-bubble"></div>
+    <div class="round-bubble"></div>
+  </div>
+  <!-- FOOTER (unchanged) -->
+  <footer>
+    <p>&copy; 2025 Kuldeep Parmar | Powered by Passion & Data </p>
+  </footer>
+  <!-- AOS Initialization -->
+  <script>
+    AOS.init({ duration: 1000, easing: 'ease-in-out', once: true });
+  </script>
+  <!-- GSAP Animations -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    // Hero Text Animation
+    gsap.from(".hero h1", { opacity: 0, y: -50, duration: 1.5, ease: "power2.out" });
+    gsap.from(".hero p", { opacity: 0, y: 50, duration: 1.5, ease: "power2.out", delay: 0.3 });
+    // Floating Objects Animation (for the original hero bubbles)
+    gsap.from(".floating", { opacity: 0, scale: 0.5, duration: 2, ease: "elastic.out(1, 0.3)", stagger: 0.5 });
+  </script>
+</body>
+</html>
