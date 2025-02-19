@@ -215,16 +215,16 @@
       <p>📞 Phone : (+49) 15510246228</p>
       <p>🏠 Address : Berlin, Germany</p>
       <p>🐙 GitHub : <a href="https://github.com/kabeera1007" target="_blank" style="color: white;">github.com/kabeera1007</a></p>
-      <p>📧 Email Address </Address> : <a href="mailto:way2mahadev@gmail.com" target="_blank" style="color: white;">way2mahadev@gmail.com </a></p>
+      <p>📧 Email Address : <a href="mailto:way2mahadev@gmail.com" target="_blank" style="color: white;">way2mahadev@gmail.com </a></p>
   </div>
 
     <!-- Contact Form Card -->
 <div class="contact-card" data-aos="fade-left">
     <h2>Get in Touch</h2>
     <form class="contact-form" id="contactForm">
-        <input type="text" name="name" placeholder="Your Name" required>
-        <input type="email" name="email" placeholder="Your Email" required>
-        <textarea name="message" placeholder="Your Message" required></textarea>
+        <input type="text" name="name" id="name" placeholder="Your Name" required>
+        <input type="email" name="email" id="email" placeholder="Your Email" required>
+        <textarea name="message" id="message" placeholder="Your Message" required></textarea>
         <button type="submit">Send Message</button>
     </form>
     <p id="thankYouMessage" style="display: none; color: green; margin-top: 10px;">
@@ -236,30 +236,45 @@
   document.getElementById("contactForm").addEventListener("submit", async function(event) {
     event.preventDefault();  // Prevent default form submission
 
-    let formData = new FormData(this);
-    let response = await fetch("https://formspree.io/f/mzzdykkn", {
-      method: "POST",
-      body: formData,
-      headers: { "Accept": "application/json" }
-    });
+    let formData = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      message: document.getElementById("message").value
+    };
 
-    if (response.ok) {
-      document.getElementById("contactForm").style.display = "none";  // Hide form
-      document.getElementById("thankYouMessage").style.display = "block";  // Show message
-    } else {
-      alert("❌ Error sending message. Please try again later.");
+    try {
+      let response = await fetch("https://formspree.io/f/mzzdykkn", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        document.getElementById("contactForm").reset();  // Clear form fields
+        document.getElementById("contactForm").style.display = "none";  // Hide form
+        document.getElementById("thankYouMessage").style.display = "block";  // Show success message
+      } else {
+        let errorData = await response.json();
+        console.error("❌ Form submission error:", errorData);
+        alert("❌ Error sending message. Please try again later.");
+      }
+    } catch (error) {
+      console.error("❌ Network error:", error);
+      alert("❌ Network error. Please check your internet connection.");
     }
   });
 </script>
 
-
-  <footer>
+<footer>
     &copy; 2025 Kuldeep Parmar | Powered by Passion & Data
-  </footer>
+</footer>
 
-  <script>
+<script>
     AOS.init(); // Initialize AOS animations
-  </script>
+</script>
 
 </body>
 </html>
