@@ -1,6 +1,8 @@
 # Port1
 
-This project is a portfolio website showcasing the skills and projects of a Data Expert Kuldeep Parmar, a data expert. Below is a comprehensive guide to the functionalities, structure, and steps to recreate this website. Website is live at (www.kuldeepparmar.com)
+This project is a portfolio website showcasing the skills and projects of a Kuldeep Parmar, a data expert. Below is a comprehensive guide to the functionalities, structure, and steps to recreate this website. 
+
+Website is live at (www.kuldeepparmar.com)
 
 
 ## Functions and Why This Website is Amazing for Beginners
