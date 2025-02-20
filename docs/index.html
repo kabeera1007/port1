@@ -317,18 +317,38 @@
   </style>
   <style>
   #chatbox {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 300px;
-    height: 400px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 10px;
-    padding: 10px;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-  }
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 400px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  padding: 10px;
+  color: #fff;
+  display: none; /* Hide chatbox by default */
+  flex-direction: column;
+}
+
+#chat-bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: #ff5733;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+#chat-bubble:hover {
+  background: #ff4500;
+}
 
   #chat {
     flex-grow: 1;
@@ -532,6 +552,7 @@
   <script>
     AOS.init({ duration: 1000, easing: 'ease-in-out', once: true });
   </script>
+  
   <!-- GSAP Animations -->
   <script>
     gsap.registerPlugin(ScrollTrigger);
@@ -542,6 +563,35 @@
     gsap.from(".floating", { opacity: 0, scale: 0.5, duration: 2, ease: "elastic.out(1, 0.3)", stagger: 0.5 });
   </script>
 <!-- GSAP Animations -->
+
+<script>
+  function toggleChatbox() {
+    const chatbox = document.getElementById("chatbox");
+    if (chatbox.style.display === "none" || chatbox.style.display === "") {
+      chatbox.style.display = "flex";
+    } else {
+      chatbox.style.display = "none";
+    }
+  }
+
+  function sendMessage() {
+    const userMessage = document.getElementById("user_input").value;
+    fetch("/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: userMessage })
+    })
+    .then(response => response.json())
+    .then(data => {
+      const chat = document.getElementById("chat");
+      chat.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+      chat.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+      chat.scrollTop = chat.scrollHeight; // Scroll to the bottom
+    });
+  }
+</script>
 <script>
   gsap.registerPlugin(ScrollTrigger);
   // Hero Text Animation
