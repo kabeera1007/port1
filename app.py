@@ -1,10 +1,12 @@
+import os
 from flask import Flask, render_template, request, redirect
 import csv
-import os
+import openai
 
 app = Flask(__name__)
 
 CSV_FILE = 'contacts.csv'
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 def write_to_csv(data, file_path=CSV_FILE):
     file_exists = os.path.exists(file_path)
@@ -39,4 +41,3 @@ def projects():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
