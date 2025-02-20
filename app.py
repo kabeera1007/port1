@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 import csv
 import openai
 
@@ -38,6 +38,19 @@ def contact():
 @app.route('/projects')
 def projects():
     return render_template('projects.html')
+
+# New /chat endpoint for the chatbot
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    user_message = data.get('message', '')
+    
+    # Example: You can process the message here.
+    # For now, we'll simply echo the user's message.
+    # Optionally, you can integrate OpenAI's API or other chatbot logic.
+    bot_response = f"Echo: {user_message}"
+    
+    return jsonify({'response': bot_response})
 
 if __name__ == "__main__":
     app.run(debug=True)
