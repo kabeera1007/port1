@@ -52,6 +52,22 @@
   }
 </style>
 
+    <style>
+  /* Existing styles */
+  
+  /* Add this media query */
+  @media (max-width: 768px) {
+    .contact-container {
+      grid-template-columns: 1fr; /* Change to single column */
+      gap: 10px; /* Adjust gap between elements */
+    }
+
+    .contact-card {
+      width: 100%; /* Ensure the cards take full width in mobile view */
+    }
+  }
+</style>
+
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-116CRKFHYV"></script>
