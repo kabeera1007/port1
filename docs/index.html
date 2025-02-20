@@ -497,36 +497,6 @@ s0.parentNode.insertBefore(s1,s0);
 
   <!-- Scripts -->
   <script>
-    // Toggle chatbox display
-    function toggleChatbox() {
-      const chatbox = document.getElementById("chatbox");
-      if (chatbox.style.display === "none" || chatbox.style.display === "") {
-        chatbox.style.display = "flex";
-      } else {
-        chatbox.style.display = "none";
-      }
-    }
-    
-    // Single consolidated sendMessage function
-    function sendMessage() {
-      const userInput = document.getElementById("user_input");
-      const userMessage = userInput.value;
-      if (!userMessage) return;
-      fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage })
-      })
-      .then(response => response.json())
-      .then(data => {
-        const chat = document.getElementById("chat");
-        chat.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
-        chat.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-        userInput.value = "";
-      })
-      .catch(error => console.error("Error:", error));
-    }
     
     // Cards animation on scroll and hover
     document.addEventListener('DOMContentLoaded', function() {
