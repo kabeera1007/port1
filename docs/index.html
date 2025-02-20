@@ -21,7 +21,47 @@
   
   <!-- External CSS -->
   <link rel="stylesheet" href="styles.css">
-  
+  <!-- Existing CSS code up to line 24 -->
+<link rel="stylesheet" href="styles.css"> <!-- Line 23 -->
+<style>
+  /* Existing styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  body {
+    background: #0f0f0f;
+    color: #fff;
+    overflow-x: hidden;
+  }
+  <!-- Existing CSS code continues -->
+
+  /* Fluid layout example */
+  .container {
+    width: 100%;
+    padding: 0 15px; /* Add padding to the container */
+  }
+
+  /* Media query example */
+  @media (max-width: 768px) {
+    .nav-links {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .nav-links li {
+      margin: 10px 0;
+    }
+    .hero h1 {
+      font-size: 24px;
+    }
+    .hero p {
+      font-size: 16px;
+    }
+  }
+</style>
+
   <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
