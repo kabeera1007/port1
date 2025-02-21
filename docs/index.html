@@ -584,5 +584,37 @@ s0.parentNode.insertBefore(s1,s0);
     gsap.from(".hero p", { opacity: 0, y: 50, duration: 1.5, ease: "power2.out", delay: 0.3 });
     gsap.from(".floating", { opacity: 0, scale: 0.5, duration: 2, ease: "elastic.out(1, 0.3)", stagger: 0.5 });
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let startTime = Date.now();
+        
+        document.body.addEventListener("click", (event) => {
+            fetch("/track", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    page_url: window.location.pathname,
+                    action: "click",
+                    element: event.target.tagName
+                })
+            });
+        });
+
+        window.addEventListener("beforeunload", () => {
+            let timeSpent = Date.now() - startTime;
+            fetch("/track", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    page_url: window.location.pathname,
+                    time_spent: timeSpent,
+                    action: "page_exit"
+                })
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
