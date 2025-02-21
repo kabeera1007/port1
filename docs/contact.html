@@ -168,14 +168,14 @@
 
     /* Contact Section */
     .contact-container {
-      display: flex;
-      justify-content: center; /* Center the cards horizontally */
-      align-items: center; /* Center the cards vertically */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 20px;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
       padding: 0 10%;
       text-align: center;
-      margin-top: 70px; /* Add top margin to avoid overlap */
     }
 
     .contact-card {
@@ -259,9 +259,8 @@
   /* Add this media query */
   @media (max-width: 768px) {
     .contact-container {
-      flex-direction: column; /* Change to single column */
+      grid-template-columns: 1fr; /* Change to single column */
       gap: 10px; /* Adjust gap between elements */
-      margin-top: 70px; /* Add top margin to avoid overlap */
     }
 
     .contact-card {
@@ -356,3 +355,4 @@
 
 </body>
 </html>
+
