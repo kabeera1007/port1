@@ -7,7 +7,7 @@ from flask_session import Session
 app = Flask(__name__)
 
 # Database Configuration - Use environment variables for security
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://flaskuser:yourpassword@localhost/usertrackonh')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://flaskuser:kabeera1007@localhost/user_tracking')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Session Configuration
