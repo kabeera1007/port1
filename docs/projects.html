@@ -23,12 +23,6 @@
       padding-top: 70px; /* Adjust based on nav bar height */
     }
 
-    /* Fluid container */
-    .container {
-      width: 100%;
-      padding: 0 15px;
-    }
-
     /* Header */
     header {
       position: fixed;
@@ -42,6 +36,7 @@
       justify-content: space-between;
       padding: 15px 50px;
       align-items: center;
+      transition: background 0.3s ease-in-out;
     }
     .logo {
       font-size: 22px;
@@ -226,7 +221,7 @@
 </head>
 <body>
   <h1>Kuldeep Parmar</h1>
-  <h2>projects and Portfolio a Data professional.</h2>
+  <h2>Projects and Portfolio of a Data Professional.</h2>
   <header>
     <div class="logo">Kuldeep Parmar</div>
     <ul class="nav-links">
@@ -246,60 +241,25 @@
     <div class="card" data-aos="fade-up" onclick="window.open('https://github.com/kabeera1007/Bike_Data_Play', '_blank')">
       <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/workflow001.png" alt="Project 1">
       <h3>Scalable Cloud-Based Data Ecosystem</h3>
-      <p>End to End efficient Data Engineering project with multiple ETL & ELT pipelines using various technologies like Google cloud, spark and airflow to automate robust work flow.</p>
+      <p>End-to-end efficient Data Engineering project with multiple ETL & ELT pipelines using various technologies like Google Cloud, Spark, and Airflow to automate robust workflows.</p>
     </div>
 
     <!-- Card 3 -->
     <div class="card" data-aos="fade-up" onclick="window.open('https://github.com/kabeera1007/lead_score_case_study', '_blank')">
-      <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/leads.png" alt="Project 3">
-      <h3>Lead score conversion case-study</h3>
-      <p>A predictive model to convert the leads score for an Education company, aiming to improve the leads conversion rates to 80% or more using data analysis and machine learning.</p>
-    </div>
-
-    <!-- Card 4 -->
-    <div class="card" data-aos="fade-up" onclick="window.open('https://github.com/kabeera1007/gesture_recognition_DL', '_blank')">
-      <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/gesture.png" alt="Project 4">
-      <h3>Gesture Recognition for Smart-TV using Deep learning</h3>
-      <p>Developed a cool feature in the smart TV that can recognize five different gestures performed by the user. This feature will help users control the TV without using a remote.</p>
-    </div>
-
-    <!-- Card 5 -->
-    <div class="card" data-aos="fade-up" onclick="window.open('https://github.com/kabeera1007/bike_sharing-EDA', '_blank')">
-      <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/predic_mod.png" alt="Project 5">
-      <h3>Predictive model for improving the demand of the bike rides.</h3>
-      <p>Developed a ML model to predict the shared bike demand using various factors like weather, season, and year, aiding BoomBikes in adjusting its business strategy.</p>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="card" data-aos="fade-up" onclick="window.open('https://github.com/kabeera1007/Telecom-Churn-Case-Study', '_blank')">
-      <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/churn.png" alt="Project 2">
-      <h3>Telecom Churn Case-Study</h3>
-      <p>Predicting Telecom customer churn using data from the first three months to identify high-risk customers and reduce churn.</p>
-    </div>
-
-    <!-- Card 6 -->
-    <div class="card" data-aos="fade-up" onclick="window.open('https://github.com/kabeera1007/portfolio', '_blank')">
-      <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/port.png" alt="Project 6">
-      <h3>How to build a portfolio for a Data professional from scratch?</h3>
-      <p>The one you are seeing and experiencing now.</p>
+      <img src="https://raw.githubusercontent.com/kabeera1007/port1/refs/heads/main/static/project_example.png" alt="Project 2">
+      <h3>Lead Scoring System</h3>
+      <p>Developed a model to predict the likelihood of a lead converting into a sale using machine learning techniques and data from a marketing dataset.</p>
     </div>
   </section>
 
   <footer>
-    &copy; 2025 Kuldeep Parmar | Powered by Passion & Data
+    <p>&copy; 2025 Kuldeep Parmar. All Rights Reserved.</p>
   </footer>
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-116CRKFHYV"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-116CRKFHYV');
-  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
-    AOS.init(); // Initialize AOS animations
+    AOS.init();
   </script>
 </body>
 </html>
+
