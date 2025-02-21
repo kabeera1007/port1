@@ -335,5 +335,37 @@
     AOS.init(); // Initialize AOS animations
   </script>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let startTime = Date.now();
+        
+        document.body.addEventListener("click", (event) => {
+            fetch("/track", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    page_url: window.location.pathname,
+                    action: "click",
+                    element: event.target.tagName
+                })
+            });
+        });
+
+        window.addEventListener("beforeunload", () => {
+            let timeSpent = Date.now() - startTime;
+            fetch("/track", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    page_url: window.location.pathname,
+                    time_spent: timeSpent,
+                    action: "page_exit"
+                })
+            });
+        });
+    });
+</script>
+
+
 </body>
 </html>
