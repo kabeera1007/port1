@@ -18,24 +18,14 @@
     background: #0f0f0f;
     color: #fff;
     overflow-x: hidden;
-  }
-
-
-  body {
-    background: #0f0f0f;
-    color: #fff;
-    overflow-x: hidden;
     padding-top: 70px; /* Adjust this value based on the height of your navigation bar */
   }
-  <!-- Existing CSS code continues -->
 
-  /* Fluid layout example */
   .container {
     width: 100%;
     padding: 0 15px; /* Add padding to the container */
   }
 
-  /* Media query example */
   @media (max-width: 768px) {
     .nav-links {
       flex-direction: column;
@@ -51,11 +41,138 @@
       font-size: 16px;
     }
   }
-  h1{
+
+  h1 {
     display: none;
   }
-</style>
 
+  /* Bubbles Effect */
+  .bubbles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  .bubbles span {
+    position: absolute;
+    bottom: -50px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 99, 71, 0.3);
+    border-radius: 50%;
+    animation: floatUp linear infinite;
+  }
+  .bubbles span:nth-child(1) { left: 10%; width: 15px; height: 15px; animation-duration: 6s; animation-delay: 1s; }
+  .bubbles span:nth-child(2) { left: 30%; width: 25px; height: 25px; animation-duration: 8s; animation-delay: 3s; }
+  .bubbles span:nth-child(3) { left: 50%; width: 10px; height: 10px; animation-duration: 5s; animation-delay: 2s; }
+  .bubbles span:nth-child(4) { left: 70%; width: 20px; height: 20px; animation-duration: 7s; animation-delay: 4s; }
+  .bubbles span:nth-child(5) { left: 90%; width: 30px; height: 30px; animation-duration: 9s; animation-delay: 6s; }
+
+  @keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-800px); opacity: 0; }
+  }
+
+  /* Contact Section */
+  .contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0 10%;
+    text-align: center;
+    padding-top: 120px; /* Additional padding for mobile view */
+  }
+
+  .contact-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .contact-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 87, 51, 0.5);
+  }
+
+  .contact-card h2 {
+    font-size: 22px;
+    color: #ff5733;
+    margin-bottom: 10px;
+  }
+
+  .contact-card p {
+    font-size: 16px;
+    color: #ddd;
+    margin-bottom: 10px;
+  }
+
+  /* Contact Form */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .contact-form textarea {
+    resize: none;
+    height: 100px;
+  }
+
+  .contact-form button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #ff5733;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .contact-form button:hover {
+    background: #e04a26;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(20, 20, 20, 0.9);
+    color: white;
+    margin-top: 50px;
+  }
+
+  @media (max-width: 768px) {
+    .contact-container {
+      grid-template-columns: 1fr; /* Change to single column */
+      gap: 10px; /* Adjust gap between elements */
+    }
+
+    .contact-card {
+      width: 100%; /* Ensure the cards take full width in mobile view */
+    }
+  }
+</style>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-116CRKFHYV"></script>
@@ -80,206 +197,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   
-  <!-- Custom Styling -->
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      background: #0f0f0f;
-      color: #fff;
-    }
-
-    /* NAVIGATION */
-    header {
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 50px;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-    }
-
-    .nav-links li {
-      margin: 0 15px;
-    }
-
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: #ff5733;
-    }
-
-    /* Bubbles Effect */
-    .bubbles {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-
-    .bubbles span {
-      position: absolute;
-      bottom: -50px;
-      width: 20px;
-      height: 20px;
-      background: rgba(255, 99, 71, 0.3);
-      border-radius: 50%;
-      animation: floatUp linear infinite;
-    }
-
-    .bubbles span:nth-child(1) { left: 10%; width: 15px; height: 15px; animation-duration: 6s; animation-delay: 1s; }
-    .bubbles span:nth-child(2) { left: 30%; width: 25px; height: 25px; animation-duration: 8s; animation-delay: 3s; }
-    .bubbles span:nth-child(3) { left: 50%; width: 10px; height: 10px; animation-duration: 5s; animation-delay: 2s; }
-    .bubbles span:nth-child(4) { left: 70%; width: 20px; height: 20px; animation-duration: 7s; animation-delay: 4s; }
-    .bubbles span:nth-child(5) { left: 90%; width: 30px; height: 30px; animation-duration: 9s; animation-delay: 6s; }
-
-    @keyframes floatUp {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(-800px); opacity: 0; }
-    }
-
-    /* Contact Section */
-    .contact-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 0 10%;
-      text-align: center;
-    }
-
-    .contact-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      border-radius: 10px;
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    .contact-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 20px rgba(255, 87, 51, 0.5);
-    }
-
-    .contact-card h2 {
-      font-size: 22px;
-      color: #ff5733;
-      margin-bottom: 10px;
-    }
-
-    .contact-card p {
-      font-size: 16px;
-      color: #ddd;
-      margin-bottom: 10px;
-    }
-
-    /* Contact Form */
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .contact-form input,
-    .contact-form textarea {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-size: 16px;
-    }
-
-    .contact-form textarea {
-      resize: none;
-      height: 100px;
-    }
-
-    .contact-form button {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background: #ff5733;
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .contact-form button:hover {
-      background: #e04a26;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: rgba(20, 20, 20, 0.9);
-      color: white;
-      margin-top: 50px;
-    }
-
-  </style>
-
-  <style>
-  /* Existing styles */
-
-  /* Add this media query */
-  @media (max-width: 768px) {
-    .contact-container {
-      grid-template-columns: 1fr; /* Change to single column */
-      gap: 10px; /* Adjust gap between elements */
-    }
-
-    .contact-card {
-      width: 100%; /* Ensure the cards take full width in mobile view */
-    }
-  }
-</style>
-
-  
 </head>
 <body>
   <h1>Kuldeep Parmar</h1>
   <header>
     <div class="logo">Kuldeep Parmar</div>
     <ul class="nav-links">
-      <li><a href="https://kabeera1007.github.io/port1/index.html">Home</a></li> <!-- Line 315 -->
-      <li><a href="https://kabeera1007.github.io/port1/about.html">About Me</a></li> <!-- Line 316 -->
-      <li><a href="https://kabeera1007.github.io/port1/projects.html">Projects</a></li> <!-- Line 317 -->
-      <li><a href="https://kabeera1007.github.io/port1/contact.html">Contact</a></li> <!-- Line 318 -->
+      <li><a href="https://kabeera1007.github.io/port1/index.html">Home</a></li>
+      <li><a href="https://kabeera1007.github.io/port1/about.html">About Me</a></li>
+      <li><a href="https://kabeera1007.github.io/port1/projects.html">Projects</a></li>
+      <li><a href="https://kabeera1007.github.io/port1/contact.html">Contact</a></li>
     </ul>
   </header>
 
