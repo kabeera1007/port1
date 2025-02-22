@@ -19,7 +19,7 @@
       background: #0f0f0f;
       color: #fff;
       overflow-x: hidden;
-      padding-top: 70px; /* space for nav */
+      padding-top: 70px; /* space for nav on desktop */
     }
     /* Hide H1/H2 for SEO */
     h1, h2 { display: none; }
@@ -59,10 +59,11 @@
       color: #ff5733;
     }
     
-    /* Responsive nav (same as projects.html) */
+    /* Responsive nav adjustments */
     @media (max-width: 768px) {
+      /* Remove extra top padding on mobile */
       body {
-        padding-top: 0; /* Removes the top padding on mobile */
+        padding-top: 0 !important;
       }
       .nav-links {
         flex-direction: column;
@@ -271,8 +272,6 @@
   </script>
 </body>
 </html>
-
-
 
 
 
