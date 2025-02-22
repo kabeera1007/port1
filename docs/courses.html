@@ -39,7 +39,7 @@
     /* Hide H1 and H2 tags */
     h1, h2 { display: none; }
     
-    /* Navigation */
+    /* Navigation: Using the same styling as projects.html */
     header {
       position: fixed;
       width: 100%;
@@ -75,6 +75,7 @@
     .nav-links a:hover {
       color: #ff5733;
     }
+    
     /* Bubbles Background */
     .bubbles {
       position: absolute;
@@ -133,6 +134,7 @@
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(-800px); opacity: 0; }
     }
+    
     /* Cards Container for a single big card */
     .cards-container {
       width: 80%;
@@ -143,6 +145,7 @@
       align-items: center;
       min-height: 70vh;
     }
+    
     /* Card Styles */
     .card {
       background-color: #2c2c2c;
@@ -183,6 +186,7 @@
     .card p {
       font-size: 1em;
     }
+    
     /* Footer */
     footer {
       width: 100%;
@@ -192,18 +196,11 @@
       color: white;
       margin-top: 50px;
     }
-    /* Media Queries */
+    
+    /* Optional: Minimal mobile adjustments (if needed) */
     @media (max-width: 768px) {
-      .nav-links {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .nav-links li {
-        margin: 10px 0;
-      }
       .cards-container {
         padding-top: 120px;
-        flex-direction: column;
       }
       .card {
         width: 90%;
@@ -261,9 +258,10 @@
   <!-- AOS Initialization -->
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
-      AOS.init(); // Initialize AOS animations
+      AOS.init();
   </script>
 </body>
 </html>
+
 
 
