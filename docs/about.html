@@ -336,7 +336,7 @@
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     let startTime = Date.now();
     let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
     sessionStorage.setItem("session_id", sessionId);
@@ -344,14 +344,23 @@
     const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
 
     async function getUserIP() {
-        try {
-            let response = await fetch("https://api.myip.com"); // Alternative IP service
-            let data = await response.json();
-            return data.ip;
-        } catch (error) {
-            console.error("IP Fetch Error:", error);
-            return "Unknown";
+        const endpoints = [
+            "https://api.myip.com",                   // Expected response: { "ip": "x.x.x.x", ... }
+            "https://api64.ipify.org?format=json",      // Expected response: { "ip": "x.x.x.x" }
+            "https://ipapi.co/json"                     // Expected response: { "ip": "x.x.x.x", ... }
+        ];
+        for (let url of endpoints) {
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                if (data && (data.ip || data.IP)) {
+                    return data.ip || data.IP;
+                }
+            } catch (error) {
+                console.error(`Error fetching from ${url}:`, error);
+            }
         }
+        return "Unknown";
     }
 
     function sendTrackingData(data, useBeacon = false) {
@@ -423,7 +432,8 @@
         }, true);
     });
 });
-  </script>
+</script>
+
 
 
 
