@@ -303,6 +303,114 @@
   <script>
       AOS.init(); // Initialize AOS animations
   </script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    let startTime = Date.now();
+    let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem("session_id", sessionId);
+
+    // Ensure your Google Apps Script is deployed with "Anyone, even anonymous" permissions.
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
+    const TARGET_TIMEZONE = "Asia/Kolkata"; // India time zone
+
+    // Helper function to convert current date to target time zone as a formatted string
+    function convertToTargetTZ(date) {
+        return new Date(date).toLocaleString("en-US", { timeZone: TARGET_TIMEZONE });
+    }
+
+    async function getUserIP() {
+        const endpoints = [
+            "https://api.myip.com",
+            "https://api64.ipify.org?format=json",
+            "https://ipapi.co/json"
+        ];
+        for (let url of endpoints) {
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                if (data && (data.ip || data.IP)) {
+                    return data.ip || data.IP;
+                }
+            } catch (error) {
+                console.error(`Error fetching from ${url}:`, error);
+            }
+        }
+        return "Unknown";
+    }
+
+    function sendTrackingData(data, useBeacon = false) {
+        console.log("Sending Data:", data);
+        if (useBeacon && navigator.sendBeacon) {
+            let success = navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
+            if (!success) {
+                console.warn("sendBeacon failed, using fetch fallback.");
+                fetch(GOOGLE_SHEET_API, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                }).catch(error => console.error("Tracking Error:", error));
+            }
+        } else {
+            fetch(GOOGLE_SHEET_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            }).catch(error => console.error("Tracking Error:", error));
+        }
+    }
+
+    let userIP = await getUserIP();
+    let timestamp = convertToTargetTZ(new Date());
+    let pageLoadData = {
+        timestamp: timestamp,
+        session_id: sessionId,
+        page_url: window.location.href,
+        action: "page_load",
+        element: "",
+        time_spent: "",
+        scroll_depth: "",
+        user_agent: navigator.userAgent,
+        browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+        screen_size: `${window.innerWidth}x${window.innerHeight}`,
+        referrer: document.referrer || "Direct",
+        ip_address: userIP
+    };
+    sendTrackingData(pageLoadData);
+
+    document.body.addEventListener("click", (event) => {
+        sendTrackingData({
+            timestamp: convertToTargetTZ(new Date()),
+            session_id: sessionId,
+            page_url: window.location.href,
+            action: "click",
+            element: event.target.tagName,
+            user_agent: navigator.userAgent,
+            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+            screen_size: `${window.innerWidth}x${window.innerHeight}`,
+            referrer: document.referrer || "Direct",
+            ip_address: userIP
+        });
+    });
+
+    window.addEventListener("beforeunload", () => {
+        let timeSpent = Date.now() - startTime;
+        sendTrackingData({
+            timestamp: convertToTargetTZ(new Date()),
+            session_id: sessionId,
+            page_url: window.location.href,
+            action: "page_exit",
+            time_spent: timeSpent,
+            user_agent: navigator.userAgent,
+            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+            screen_size: `${window.innerWidth}x${window.innerHeight}`,
+            referrer: document.referrer || "Direct",
+            ip_address: userIP
+        }, true);
+    });
+});
+</script>
+
 </body>
 </html>
 
