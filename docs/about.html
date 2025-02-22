@@ -341,7 +341,7 @@
         let sessionId = localStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
         localStorage.setItem("session_id", sessionId);
 
-        const GOOGLE_SHEET_API = "YOUR_GOOGLE_APPS_SCRIPT_URL";
+        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
 
         // Get user's IP address
         async function getUserIP() {
