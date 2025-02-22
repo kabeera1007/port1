@@ -7,13 +7,12 @@
   <meta name="description" content="Kuldeep Parmar - Data Expert. Stay tuned for interesting courses coming soon.">
   <meta name="keywords" content="Kuldeep Parmar, Courses, Data Expert, Data Science, AI, Technology">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
   
   <!-- AOS CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
   <!-- Main CSS from static folder -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
+  
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-116CRKFHYV"></script>
   <script>
@@ -35,12 +34,11 @@
       background: #0f0f0f;
       color: #fff;
       overflow-x: hidden;
-      padding-top: 70px; /* Adjust based on nav height */
+      padding-top: 70px;
     }
-    .container {
-      width: 100%;
-      padding: 0 15px;
-    }
+    /* Hide H1 and H2 tags */
+    h1, h2 { display: none; }
+    
     /* Navigation */
     header {
       position: fixed;
@@ -132,24 +130,18 @@
       animation-delay: 6s;
     }
     @keyframes floatUp {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-800px);
-        opacity: 0;
-      }
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-800px); opacity: 0; }
     }
-    /* Cards Container */
+    /* Cards Container for a single big card */
     .cards-container {
       width: 80%;
       margin: 0 auto;
-      padding: 100px 20px 20px; /* padding-top prevents overlap with nav */
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
+      padding: 100px 20px 20px;
+      display: flex;
       justify-content: center;
+      align-items: center;
+      min-height: 70vh;
     }
     /* Card Styles */
     .card {
@@ -162,7 +154,11 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      width: 100%;
+      width: 70%;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     .card:hover {
       transform: scale(1.05);
@@ -201,16 +197,17 @@
       .nav-links {
         flex-direction: column;
         align-items: flex-start;
-        padding-left: 0; /* Ensure left alignment */
       }
       .nav-links li {
         margin: 10px 0;
       }
       .cards-container {
         padding-top: 120px;
+        flex-direction: column;
       }
       .card {
-        width: 100%;
+        width: 90%;
+        min-height: 70vh;
       }
     }
   </style>
@@ -237,10 +234,10 @@
     <span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <!-- Centered Single Card -->
+  <!-- Single Centered Big Card -->
   <section class="cards-container">
     <div class="card" data-aos="fade-up">
-      <!-- Replace the image URL if needed -->
+      <!-- Replace image URL as needed -->
       <img src="https://via.placeholder.com/800x600.png?text=Courses" alt="Courses Background">
       <h3>Interesting Courses Coming Soon</h3>
       <p>Stay tuned for exciting learning opportunities.</p>
@@ -268,4 +265,5 @@
   </script>
 </body>
 </html>
+
 
