@@ -342,12 +342,16 @@
         // Replace with your Google Apps Script URL
         const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbyCrLbdnIVjk16exzzJsPg9_Ud9YJ1FdL5fYReixmCIyrBDixELJCmWzUwa6Ux00wbg/exec";
 
-        function sendTrackingData(data) {
-            fetch(GOOGLE_SHEET_API, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(data)
-            }).then(response => response.text()).then(data => console.log(data));
+        function sendTrackingData(data, useBeacon = false) {
+            if (useBeacon) {
+                navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
+            } else {
+                fetch(GOOGLE_SHEET_API, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                }).then(response => response.text()).then(data => console.log(data));
+            }
         }
 
         // Track Page Load
@@ -371,7 +375,7 @@
             });
         });
 
-        // Track Page Exit
+        // ✅ Use `sendBeacon` for Page Exit (fix for data loss)
         window.addEventListener("beforeunload", () => {
             let timeSpent = Date.now() - startTime;
             sendTrackingData({
@@ -381,10 +385,11 @@
                 user_agent: navigator.userAgent,
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
                 referrer: document.referrer
-            });
+            }, true); // ✅ Use `sendBeacon` to ensure data is sent before the page closes
         });
     });
 </script>
+
 
 
 
