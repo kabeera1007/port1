@@ -59,7 +59,7 @@
       color: #ff5733;
     }
     
-    /* Responsive nav as in projects.html */
+    /* Responsive nav (same as projects.html) */
     @media (max-width: 768px) {
       .nav-links {
         flex-direction: column;
@@ -135,7 +135,7 @@
       100% { transform: translateY(-800px); opacity: 0; }
     }
     
-    /* Cards container for single big card */
+    /* Cards container to center one big card */
     .cards-container {
       width: 80%;
       margin: 0 auto;
@@ -146,13 +146,13 @@
       min-height: 70vh;
     }
     
-    /* Big centered card style with reinforced hover effect */
+    /* Big centered card style */
     .card {
       background-color: #2c2c2c;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -196,7 +196,7 @@
       margin-top: 50px;
     }
     
-    /* Mobile adjustments for card container */
+    /* Additional mobile adjustments for card container */
     @media (max-width: 768px) {
       .cards-container {
         padding-top: 120px;
@@ -243,7 +243,7 @@
   <!-- Single Centered Big Card -->
   <section class="cards-container">
     <div class="card" data-aos="fade-up" onclick="window.open('#', '_self')">
-      <!-- Replace image URL if desired -->
+      <!-- Replace with your desired image URL -->
       <img src="https://via.placeholder.com/800x600.png?text=Courses" alt="Courses Background">
       <h3>Interesting Courses Coming Soon</h3>
       <p>Stay tuned for exciting learning opportunities.</p>
