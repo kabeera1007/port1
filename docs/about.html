@@ -341,13 +341,20 @@
     let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
     sessionStorage.setItem("session_id", sessionId);
 
+    // Ensure your Google Apps Script is deployed with "Anyone, even anonymous" permissions.
     const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
+    const TARGET_TIMEZONE = "Asia/Kolkata"; // India time zone
+
+    // Helper function to convert current date to target time zone as a formatted string
+    function convertToTargetTZ(date) {
+        return new Date(date).toLocaleString("en-US", { timeZone: TARGET_TIMEZONE });
+    }
 
     async function getUserIP() {
         const endpoints = [
-            "https://api.myip.com",                   // Expected response: { "ip": "x.x.x.x", ... }
-            "https://api64.ipify.org?format=json",      // Expected response: { "ip": "x.x.x.x" }
-            "https://ipapi.co/json"                     // Expected response: { "ip": "x.x.x.x", ... }
+            "https://api.myip.com",
+            "https://api64.ipify.org?format=json",
+            "https://ipapi.co/json"
         ];
         for (let url of endpoints) {
             try {
@@ -385,8 +392,9 @@
     }
 
     let userIP = await getUserIP();
+    let timestamp = convertToTargetTZ(new Date());
     let pageLoadData = {
-        timestamp: new Date().toISOString(),
+        timestamp: timestamp,
         session_id: sessionId,
         page_url: window.location.href,
         action: "page_load",
@@ -403,7 +411,7 @@
 
     document.body.addEventListener("click", (event) => {
         sendTrackingData({
-            timestamp: new Date().toISOString(),
+            timestamp: convertToTargetTZ(new Date()),
             session_id: sessionId,
             page_url: window.location.href,
             action: "click",
@@ -419,7 +427,7 @@
     window.addEventListener("beforeunload", () => {
         let timeSpent = Date.now() - startTime;
         sendTrackingData({
-            timestamp: new Date().toISOString(),
+            timestamp: convertToTargetTZ(new Date()),
             session_id: sessionId,
             page_url: window.location.href,
             action: "page_exit",
@@ -433,8 +441,6 @@
     });
 });
 </script>
-
-
 
 
 </body>
