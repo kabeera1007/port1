@@ -336,59 +336,110 @@
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
         let startTime = Date.now();
+        let sessionId = localStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("session_id", sessionId);
 
-        // Replace with your Google Apps Script URL
-        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbyCrLbdnIVjk16exzzJsPg9_Ud9YJ1FdL5fYReixmCIyrBDixELJCmWzUwa6Ux00wbg/exec";
+        const GOOGLE_SHEET_API = "YOUR_GOOGLE_APPS_SCRIPT_URL";
 
+        // Function to get user's IP address
+        async function getUserIP() {
+            try {
+                let response = await fetch("https://api64.ipify.org?format=json");
+                let data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error("IP Fetch Error:", error);
+                return "Unknown";
+            }
+        }
+
+        // Extract Browser Name from User-Agent
+        function getBrowserName() {
+            let ua = navigator.userAgent;
+            if (ua.includes("Chrome")) return "Chrome";
+            if (ua.includes("Firefox")) return "Firefox";
+            if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
+            if (ua.includes("Edge")) return "Edge";
+            if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
+            return "Other";
+        }
+
+        // Function to send tracking data
         function sendTrackingData(data, useBeacon = false) {
             if (useBeacon) {
                 navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
             } else {
                 fetch(GOOGLE_SHEET_API, {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
-                }).then(response => response.text()).then(data => console.log(data));
+                }).then(response => response.text()).then(data => console.log("Tracking Response:", data));
             }
         }
 
-        // Track Page Load
+        // Fetch IP and send Page Load event
+        let userIP = await getUserIP();
         sendTrackingData({
-            page_url: window.location.pathname,
+            session_id: sessionId,
+            page_url: window.location.href,
             action: "page_load",
             user_agent: navigator.userAgent,
+            browser: getBrowserName(),
             screen_size: `${window.innerWidth}x${window.innerHeight}`,
-            referrer: document.referrer
+            referrer: document.referrer,
+            ip_address: userIP
         });
 
         // Track Clicks
         document.body.addEventListener("click", (event) => {
             sendTrackingData({
-                page_url: window.location.pathname,
+                session_id: sessionId,
+                page_url: window.location.href,
                 action: "click",
                 element: event.target.tagName,
                 user_agent: navigator.userAgent,
+                browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer
+                referrer: document.referrer,
+                ip_address: userIP
             });
         });
 
-        // ✅ Use `sendBeacon` for Page Exit (fix for data loss)
+        // Track Scroll Depth
+        window.addEventListener("scroll", () => {
+            let scrollDepth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
+            sendTrackingData({
+                session_id: sessionId,
+                page_url: window.location.href,
+                action: "scroll",
+                scroll_depth: scrollDepth,
+                user_agent: navigator.userAgent,
+                browser: getBrowserName(),
+                screen_size: `${window.innerWidth}x${window.innerHeight}`,
+                ip_address: userIP
+            });
+        });
+
+        // Track Page Exit
         window.addEventListener("beforeunload", () => {
             let timeSpent = Date.now() - startTime;
             sendTrackingData({
-                page_url: window.location.pathname,
+                session_id: sessionId,
+                page_url: window.location.href,
                 time_spent: timeSpent,
                 action: "page_exit",
                 user_agent: navigator.userAgent,
+                browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer
-            }, true); // ✅ Use `sendBeacon` to ensure data is sent before the page closes
+                referrer: document.referrer,
+                ip_address: userIP
+            }, true);
         });
     });
 </script>
+
 
 
 
