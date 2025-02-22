@@ -336,19 +336,26 @@
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
         let startTime = Date.now();
-        
-        // Replace with your Google Apps Script URL
-        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbwyhEnS8VZ_DjstyWuK0u8nFqRbr365AftsZhM5Ic5oei0QS44tQ5W00T5YszomqxRa/exec";
+        let sessionId = localStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("session_id", sessionId);
 
-        function getIP(callback) {
-            fetch("https://api64.ipify.org?format=json")
-                .then(response => response.json())
-                .then(data => callback(data.ip));
+        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
+
+        async function getUserIP() {
+            try {
+                let response = await fetch("https://api64.ipify.org?format=json");
+                let data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error("IP Fetch Error:", error);
+                return "Unknown";
+            }
         }
 
         function sendTrackingData(data, useBeacon = false) {
+            console.log("Sending Data:", data); // Debugging log
             if (useBeacon) {
                 navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
             } else {
@@ -356,54 +363,58 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
-                }).then(response => response.text()).then(data => console.log(data));
+                }).then(response => response.text())
+                  .then(data => console.log("Response:", data))
+                  .catch(error => console.error("Tracking Error:", error));
             }
         }
 
-        // Get IP and send page load event
-        getIP((ip) => {
+        let userIP = await getUserIP();
+        let pageLoadData = {
+            timestamp: new Date().toISOString(),
+            session_id: sessionId,
+            page_url: window.location.href,
+            action: "page_load",
+            element: "",
+            time_spent: "",
+            scroll_depth: "",
+            user_agent: navigator.userAgent,
+            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+            screen_size: `${window.innerWidth}x${window.innerHeight}`,
+            referrer: document.referrer || "Direct",
+            ip_address: userIP
+        };
+        sendTrackingData(pageLoadData);
+
+        document.body.addEventListener("click", (event) => {
             sendTrackingData({
                 timestamp: new Date().toISOString(),
+                session_id: sessionId,
                 page_url: window.location.href,
-                action: "page_load",
+                action: "click",
+                element: event.target.tagName,
                 user_agent: navigator.userAgent,
+                browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
                 referrer: document.referrer || "Direct",
-                ip_address: ip
+                ip_address: userIP
             });
         });
 
-        // Track Clicks
-        document.body.addEventListener("click", (event) => {
-            getIP((ip) => {
-                sendTrackingData({
-                    timestamp: new Date().toISOString(),
-                    page_url: window.location.href,
-                    action: "click",
-                    element: event.target.tagName,
-                    user_agent: navigator.userAgent,
-                    screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                    referrer: document.referrer || "Direct",
-                    ip_address: ip
-                });
-            });
-        });
-
-        // Track Page Exit
         window.addEventListener("beforeunload", () => {
             let timeSpent = Date.now() - startTime;
-            getIP((ip) => {
-                sendTrackingData({
-                    timestamp: new Date().toISOString(),
-                    page_url: window.location.href,
-                    action: "page_exit",
-                    time_spent: timeSpent,
-                    user_agent: navigator.userAgent,
-                    screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                    referrer: document.referrer || "Direct",
-                    ip_address: ip
-                }, true);
-            });
+            sendTrackingData({
+                timestamp: new Date().toISOString(),
+                session_id: sessionId,
+                page_url: window.location.href,
+                action: "page_exit",
+                time_spent: timeSpent,
+                user_agent: navigator.userAgent,
+                browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+                screen_size: `${window.innerWidth}x${window.innerHeight}`,
+                referrer: document.referrer || "Direct",
+                ip_address: userIP
+            }, true);
         });
     });
 </script>
