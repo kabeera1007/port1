@@ -341,9 +341,9 @@
         let sessionId = localStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
         localStorage.setItem("session_id", sessionId);
 
-        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzVYQzXh_HSqOjyIH0RaraeFluEKO4s1ogRRcObnnMREhRZ288FcQIu9tJmOLgwUTSa/exec";
+        const GOOGLE_SHEET_API = "YOUR_GOOGLE_APPS_SCRIPT_URL";
 
-        // Function to get user's IP address
+        // Get user's IP address
         async function getUserIP() {
             try {
                 let response = await fetch("https://api64.ipify.org?format=json");
@@ -383,12 +383,13 @@
         // Fetch IP and send Page Load event
         let userIP = await getUserIP();
         let pageLoadData = {
+            timestamp: new Date().toISOString(), // Ensure timestamp is included
             session_id: sessionId,
             page_url: window.location.href,
             action: "page_load",
-            element: "",  // Empty because no element is clicked
-            time_spent: "", // Empty for page_load
-            scroll_depth: "", // Empty for page_load
+            element: "",  
+            time_spent: "", 
+            scroll_depth: "", 
             user_agent: navigator.userAgent,
             browser: getBrowserName(),
             screen_size: `${window.innerWidth}x${window.innerHeight}`,
@@ -400,12 +401,13 @@
         // Track Clicks
         document.body.addEventListener("click", (event) => {
             let clickData = {
+                timestamp: new Date().toISOString(),
                 session_id: sessionId,
                 page_url: window.location.href,
                 action: "click",
                 element: event.target.tagName,
-                time_spent: "", // Not needed for clicks
-                scroll_depth: "", // Not needed for clicks
+                time_spent: "", 
+                scroll_depth: "", 
                 user_agent: navigator.userAgent,
                 browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
@@ -419,11 +421,12 @@
         window.addEventListener("scroll", () => {
             let scrollDepth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
             let scrollData = {
+                timestamp: new Date().toISOString(),
                 session_id: sessionId,
                 page_url: window.location.href,
                 action: "scroll",
-                element: "", // Not needed for scrolls
-                time_spent: "", // Not needed for scrolls
+                element: "", 
+                time_spent: "", 
                 scroll_depth: scrollDepth,
                 user_agent: navigator.userAgent,
                 browser: getBrowserName(),
@@ -438,19 +441,20 @@
         window.addEventListener("beforeunload", () => {
             let timeSpent = Date.now() - startTime;
             let exitData = {
+                timestamp: new Date().toISOString(),
                 session_id: sessionId,
                 page_url: window.location.href,
                 action: "page_exit",
-                element: "", // Not needed for exit
+                element: "", 
                 time_spent: timeSpent,
-                scroll_depth: "", // Not needed for exit
+                scroll_depth: "", 
                 user_agent: navigator.userAgent,
                 browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
                 referrer: document.referrer || "Direct",
                 ip_address: userIP
             };
-            sendTrackingData(exitData, true); // ✅ Use `sendBeacon` to ensure data is sent before the page closes
+            sendTrackingData(exitData, true); // ✅ Use `sendBeacon` for exit events
         });
     });
 </script>
