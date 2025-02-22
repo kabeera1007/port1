@@ -21,6 +21,10 @@
       overflow-x: hidden;
       padding-top: 70px; /* space for nav on desktop */
     }
+    .container {
+      width: 100%;
+      padding: 0 15px;
+    }
     /* Hide H1/H2 for SEO */
     h1, h2 { display: none; }
     
@@ -74,6 +78,17 @@
       }
       .hero p {
         font-size: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+        padding-top: 120px; /* Additional padding for mobile view */
+      }
+
+      .card {
+        width: 100%;
       }
     }
     
@@ -197,16 +212,7 @@
       margin-top: 50px;
     }
     
-    /* Additional mobile adjustments for card container */
-    @media (max-width: 768px) {
-      .cards-container {
-        padding-top: 120px;
-      }
-      .card {
-        width: 90%;
-        min-height: 70vh;
-      }
-    }
+   
   </style>
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
