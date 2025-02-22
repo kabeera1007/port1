@@ -341,7 +341,7 @@
         let sessionId = localStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
         localStorage.setItem("session_id", sessionId);
 
-        const GOOGLE_SHEET_API = "YOUR_GOOGLE_APPS_SCRIPT_URL";
+        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzVYQzXh_HSqOjyIH0RaraeFluEKO4s1ogRRcObnnMREhRZ288FcQIu9tJmOLgwUTSa/exec";
 
         // Function to get user's IP address
         async function getUserIP() {
@@ -358,10 +358,10 @@
         // Extract Browser Name from User-Agent
         function getBrowserName() {
             let ua = navigator.userAgent;
-            if (ua.includes("Chrome")) return "Chrome";
+            if (ua.includes("Chrome") && !ua.includes("Edg")) return "Chrome";
             if (ua.includes("Firefox")) return "Firefox";
             if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
-            if (ua.includes("Edge")) return "Edge";
+            if (ua.includes("Edge") || ua.includes("Edg")) return "Edge";
             if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
             return "Other";
         }
@@ -375,67 +375,82 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
-                }).then(response => response.text()).then(data => console.log("Tracking Response:", data));
+                }).then(response => response.text()).then(data => console.log("Tracking Response:", data))
+                  .catch(error => console.error("Tracking Error:", error));
             }
         }
 
         // Fetch IP and send Page Load event
         let userIP = await getUserIP();
-        sendTrackingData({
+        let pageLoadData = {
             session_id: sessionId,
             page_url: window.location.href,
             action: "page_load",
+            element: "",  // Empty because no element is clicked
+            time_spent: "", // Empty for page_load
+            scroll_depth: "", // Empty for page_load
             user_agent: navigator.userAgent,
             browser: getBrowserName(),
             screen_size: `${window.innerWidth}x${window.innerHeight}`,
-            referrer: document.referrer,
+            referrer: document.referrer || "Direct",
             ip_address: userIP
-        });
+        };
+        sendTrackingData(pageLoadData);
 
         // Track Clicks
         document.body.addEventListener("click", (event) => {
-            sendTrackingData({
+            let clickData = {
                 session_id: sessionId,
                 page_url: window.location.href,
                 action: "click",
                 element: event.target.tagName,
+                time_spent: "", // Not needed for clicks
+                scroll_depth: "", // Not needed for clicks
                 user_agent: navigator.userAgent,
                 browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer,
+                referrer: document.referrer || "Direct",
                 ip_address: userIP
-            });
+            };
+            sendTrackingData(clickData);
         });
 
         // Track Scroll Depth
         window.addEventListener("scroll", () => {
             let scrollDepth = Math.round((window.scrollY + window.innerHeight) / document.body.scrollHeight * 100);
-            sendTrackingData({
+            let scrollData = {
                 session_id: sessionId,
                 page_url: window.location.href,
                 action: "scroll",
+                element: "", // Not needed for scrolls
+                time_spent: "", // Not needed for scrolls
                 scroll_depth: scrollDepth,
                 user_agent: navigator.userAgent,
                 browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
+                referrer: document.referrer || "Direct",
                 ip_address: userIP
-            });
+            };
+            sendTrackingData(scrollData);
         });
 
         // Track Page Exit
         window.addEventListener("beforeunload", () => {
             let timeSpent = Date.now() - startTime;
-            sendTrackingData({
+            let exitData = {
                 session_id: sessionId,
                 page_url: window.location.href,
-                time_spent: timeSpent,
                 action: "page_exit",
+                element: "", // Not needed for exit
+                time_spent: timeSpent,
+                scroll_depth: "", // Not needed for exit
                 user_agent: navigator.userAgent,
                 browser: getBrowserName(),
                 screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer,
+                referrer: document.referrer || "Direct",
                 ip_address: userIP
-            }, true);
+            };
+            sendTrackingData(exitData, true); // ✅ Use `sendBeacon` to ensure data is sent before the page closes
         });
     });
 </script>
