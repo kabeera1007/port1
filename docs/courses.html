@@ -1,229 +1,261 @@
-<!DOCTYPE html>
+<!DOCTYPE html
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Courses - Kuldeep Parmar</title>
-  <meta name="description" content="Kuldeep Parmar - Data Expert, specializing in transforming Ideas and Information into Reality with Cutting-Edge Technology and Wisdom.">
-  <meta name="keywords" content="Kuldeep Parmar, Courses, Data Expert, Data Science, AI, Technology">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-    body {
-      background: #0f0f0f;
-      color: #fff;
-      overflow-x: hidden;
-      padding-top: 70px; /* space for nav on desktop */
-    }
-    .container {
-      width: 100%;
-      padding: 0 15px;
-    }
-    /* Hide H1/H2 for SEO */
-    h1, h2 { display: none; }
-    
-    /* Navigation as in projects.html */
-    header {
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 50px;
-      align-items: center;
-    }
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unleashing the Power of Data</title>
+    <meta name="description" content="Kuldeep Parmar - Data Expert, specializing in transforming Ideas and Information into Reality with Cutting-Edge Technology and Wisdom.">
+    <meta name="keywords" content="Kuldeep Parmar, kuldeepparmar, kuldeep parmar data scientist, best data scientist, hire data expert, dataexpert germany, Data Expert, data science mentor, data science expert, ai, hire talent, hire data expert, Technology">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- Line 23 -->
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  body {
+    background: #0f0f0f;
+    color: #fff;
+    overflow-x: hidden;
+    padding-top: 70px; /* Adjust this value based on the height of your navigation bar */
+  }
+
+  .container {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  @media (max-width: 768px) {
     .nav-links {
-      list-style: none;
-      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
     .nav-links li {
-      margin: 0 15px;
+      margin: 10px 0;
     }
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
+    .hero h1 {
+      font-size: 24px;
     }
-    .nav-links a:hover {
-      color: #ff5733;
+    .hero p {
+      font-size: 16px;
     }
-    
-    /* Responsive nav adjustments */
-    @media (max-width: 768px) {
-      /* Remove extra top padding on mobile */
-      .nav-links {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .nav-links li {
-        margin: 10px 0;
-      }
-      .hero h1 {
-        font-size: 24px;
-      }
-      .hero p {
-        font-size: 16px;
-      }
-    }
+  }
 
-    @media (max-width: 768px) {
-      .cards-container {
-        grid-template-columns: 1fr;
-        padding-top: 120px; /* Additional padding for mobile view */
-      }
+  .cards-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 100px 20px 20px; /* Add padding to the top to prevent cards from being hidden under the navigation bar */
+    display: grid;
+    grid-template-columns: 1fr ;
+    gap: 30px;
+    justify-content: center;
+  }
 
-      .card {
-        width: 100%;
-      }
-    }
-    
-    /* Bubbles Background */
-    .bubbles {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-    .bubbles span {
-      position: absolute;
-      bottom: -50px;
-      width: 20px;
-      height: 20px;
-      background: rgba(255, 99, 71, 0.3);
-      border-radius: 50%;
-      animation: floatUp linear infinite;
-    }
-    .bubbles span:nth-child(1) {
-      left: 10%;
-      width: 15px;
-      height: 15px;
-      animation-duration: 6s;
-      animation-delay: 1s;
-    }
-    .bubbles span:nth-child(2) {
-      left: 30%;
-      width: 25px;
-      height: 25px;
-      animation-duration: 8s;
-      animation-delay: 3s;
-    }
-    .bubbles span:nth-child(3) {
-      left: 50%;
-      width: 10px;
-      height: 10px;
-      animation-duration: 5s;
-      animation-delay: 2s;
-    }
-    .bubbles span:nth-child(4) {
-      left: 70%;
-      width: 20px;
-      height: 20px;
-      animation-duration: 7s;
-      animation-delay: 4s;
-    }
-    .bubbles span:nth-child(5) {
-      left: 90%;
-      width: 30px;
-      height: 30px;
-      animation-duration: 9s;
-      animation-delay: 6s;
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(-800px); opacity: 0; }
-    }
-    
-    /* Cards container to center one big card */
+  @media (max-width: 768px) {
     .cards-container {
-      width: 80%;
-      margin: 0 auto;
-      padding: 100px 20px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 70vh;
+      grid-template-columns: 1fr;
+      padding-top: 120px; /* Additional padding for mobile view */
     }
-    
-    /* Big centered card style */
+
     .card {
-      background-color: #2c2c2c;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      width: 70%;
-      min-height: 70vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 20px rgba(255, 87, 51, 0.5);
-    }
-    .card img {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.08;
-      z-index: -1;
     }
-    .card h3 {
-      margin-bottom: 10px;
-      font-size: 1.6em;
-      color: #ff5733;
-      transition: color 0.3s ease-in-out;
-    }
-    .card p {
-      font-size: 1em;
-    }
+  }
+
+  h1, h2 {
+    display: none;
+  }
+</style>
+
+    <style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-116CRKFHYV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-116CRKFHYV');
+    </script>
     
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: rgba(20, 20, 20, 0.9);
-      color: white;
-      margin-top: 50px;
-    }
-    
-   
-  </style>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-116CRKFHYV"></script>
-  <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-116CRKFHYV');
-  </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #fff;
+            padding-top: 70px;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 50px;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff5733;
+        }
+
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .bubbles span {
+            position: absolute;
+            bottom: -50px;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 99, 71, 0.3);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+        .bubbles span:nth-child(1) {
+            left: 10%;
+            width: 15px;
+            height: 15px;
+            animation-duration: 6s;
+            animation-delay: 1s;
+        }
+        .bubbles span:nth-child(2) {
+            left: 30%;
+            width: 25px;
+            height: 25px;
+            animation-duration: 8s;
+            animation-delay: 3s;
+        }
+        .bubbles span:nth-child(3) {
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            animation-duration: 5s;
+            animation-delay: 2s;
+        }
+        .bubbles span:nth-child(4) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-duration: 7s;
+            animation-delay: 4s;
+        }
+        .bubbles span:nth-child(5) {
+            left: 90%;
+            width: 30px;
+            height: 30px;
+            animation-duration: 9s;
+            animation-delay: 6s;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-800px);
+                opacity: 0;
+            }
+        }
+
+        /* Big centered card style */
+        .card {
+          background-color: #2c2c2c;
+          border-radius: 10px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+          width: 70%;
+          min-height: 70vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 87, 51, 0.5);
+        }
+
+        .card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.08;
+            z-index: -1;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 1.6em;
+            color: #ff5733;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .card p {
+            font-size: 1em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(20, 20, 20, 0.9);
+            color: white;
+            margin-top: 50px;
+        }
+
+    </style>
 </head>
 <body>
   <!-- Hidden for SEO -->
