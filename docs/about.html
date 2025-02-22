@@ -337,89 +337,93 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-        let startTime = Date.now();
-        let sessionId = localStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("session_id", sessionId);
+    let startTime = Date.now();
+    let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem("session_id", sessionId);
 
-        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
 
-        async function getUserIP() {
-            try {
-                let response = await fetch("https://api64.ipify.org?format=json");
-                let data = await response.json();
-                return data.ip;
-            } catch (error) {
-                console.error("IP Fetch Error:", error);
-                return "Unknown";
-            }
+    async function getUserIP() {
+        try {
+            let response = await fetch("https://api.myip.com"); // Alternative IP service
+            let data = await response.json();
+            return data.ip;
+        } catch (error) {
+            console.error("IP Fetch Error:", error);
+            return "Unknown";
         }
+    }
 
-        function sendTrackingData(data, useBeacon = false) {
-            console.log("Sending Data:", data); // Debugging log
-            if (useBeacon) {
-                navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
-            } else {
+    function sendTrackingData(data, useBeacon = false) {
+        console.log("Sending Data:", data);
+        if (useBeacon && navigator.sendBeacon) {
+            let success = navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
+            if (!success) {
+                console.warn("sendBeacon failed, using fetch fallback.");
                 fetch(GOOGLE_SHEET_API, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
-                }).then(response => response.text())
-                  .then(data => console.log("Response:", data))
-                  .catch(error => console.error("Tracking Error:", error));
+                }).catch(error => console.error("Tracking Error:", error));
             }
+        } else {
+            fetch(GOOGLE_SHEET_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            }).catch(error => console.error("Tracking Error:", error));
         }
+    }
 
-        let userIP = await getUserIP();
-        let pageLoadData = {
+    let userIP = await getUserIP();
+    let pageLoadData = {
+        timestamp: new Date().toISOString(),
+        session_id: sessionId,
+        page_url: window.location.href,
+        action: "page_load",
+        element: "",
+        time_spent: "",
+        scroll_depth: "",
+        user_agent: navigator.userAgent,
+        browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+        screen_size: `${window.innerWidth}x${window.innerHeight}`,
+        referrer: document.referrer || "Direct",
+        ip_address: userIP
+    };
+    sendTrackingData(pageLoadData);
+
+    document.body.addEventListener("click", (event) => {
+        sendTrackingData({
             timestamp: new Date().toISOString(),
             session_id: sessionId,
             page_url: window.location.href,
-            action: "page_load",
-            element: "",
-            time_spent: "",
-            scroll_depth: "",
+            action: "click",
+            element: event.target.tagName,
             user_agent: navigator.userAgent,
             browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
             screen_size: `${window.innerWidth}x${window.innerHeight}`,
             referrer: document.referrer || "Direct",
             ip_address: userIP
-        };
-        sendTrackingData(pageLoadData);
-
-        document.body.addEventListener("click", (event) => {
-            sendTrackingData({
-                timestamp: new Date().toISOString(),
-                session_id: sessionId,
-                page_url: window.location.href,
-                action: "click",
-                element: event.target.tagName,
-                user_agent: navigator.userAgent,
-                browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
-                screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer || "Direct",
-                ip_address: userIP
-            });
-        });
-
-        window.addEventListener("beforeunload", () => {
-            let timeSpent = Date.now() - startTime;
-            sendTrackingData({
-                timestamp: new Date().toISOString(),
-                session_id: sessionId,
-                page_url: window.location.href,
-                action: "page_exit",
-                time_spent: timeSpent,
-                user_agent: navigator.userAgent,
-                browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
-                screen_size: `${window.innerWidth}x${window.innerHeight}`,
-                referrer: document.referrer || "Direct",
-                ip_address: userIP
-            }, true);
         });
     });
-</script>
 
-
+    window.addEventListener("beforeunload", () => {
+        let timeSpent = Date.now() - startTime;
+        sendTrackingData({
+            timestamp: new Date().toISOString(),
+            session_id: sessionId,
+            page_url: window.location.href,
+            action: "page_exit",
+            time_spent: timeSpent,
+            user_agent: navigator.userAgent,
+            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
+            screen_size: `${window.innerWidth}x${window.innerHeight}`,
+            referrer: document.referrer || "Direct",
+            ip_address: userIP
+        }, true);
+    });
+});
+  </script>
 
 
 
