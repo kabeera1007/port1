@@ -347,8 +347,17 @@
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(data)
-            });
+            }).then(response => response.text()).then(data => console.log(data));
         }
+
+        // Track Page Load
+        sendTrackingData({
+            page_url: window.location.pathname,
+            action: "page_load",
+            user_agent: navigator.userAgent,
+            screen_size: `${window.innerWidth}x${window.innerHeight}`,
+            referrer: document.referrer
+        });
 
         // Track Clicks
         document.body.addEventListener("click", (event) => {
@@ -356,7 +365,9 @@
                 page_url: window.location.pathname,
                 action: "click",
                 element: event.target.tagName,
-                user_agent: navigator.userAgent
+                user_agent: navigator.userAgent,
+                screen_size: `${window.innerWidth}x${window.innerHeight}`,
+                referrer: document.referrer
             });
         });
 
@@ -367,11 +378,14 @@
                 page_url: window.location.pathname,
                 time_spent: timeSpent,
                 action: "page_exit",
-                user_agent: navigator.userAgent
+                user_agent: navigator.userAgent,
+                screen_size: `${window.innerWidth}x${window.innerHeight}`,
+                referrer: document.referrer
             });
         });
     });
 </script>
+
 
 
 
