@@ -354,14 +354,14 @@
     AOS.init(); // Initialize AOS animations
 </script>
 
-<script>
+  <script>
   document.addEventListener("DOMContentLoaded", async () => {
   let startTime = Date.now();
   let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
   sessionStorage.setItem("session_id", sessionId);
 
   // Replace with your deployed Google Apps Script URL.
-  const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycby83T06ST95Z1qJrUhHM8hfYqp8BZ9iTDddki1OF2kRd_aLxp3OhLWUmlcX_kWOfO0tIQ/exec";
+  const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbxYlqZPHxh328xTeJSx6rUbgrBRn0ciLC3TW55ojWYDTk64LpQCnRQMgukkmqP-UkI/exec";
   const TARGET_TIMEZONE = "Asia/Kolkata"; // India time zone
 
   // Helper function to extract detailed date/time info.
