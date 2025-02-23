@@ -354,163 +354,139 @@
     AOS.init(); // Initialize AOS animations
 </script>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-  let startTime = Date.now();
-  let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
-  sessionStorage.setItem("session_id", sessionId);
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    let startTime = Date.now();
+    let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem("session_id", sessionId);
 
-  // Replace with your deployed Google Apps Script URL.
-  const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbxYlqZPHxh328xTeJSx6rUbgrBRn0ciLC3TW55ojWYDTk64LpQCnRQMgukkmqP-UkI/exec";
-  const TARGET_TIMEZONE = "Asia/Kolkata"; // India time zone
+    // Replace with your deployed Google Apps Script URL.
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbwMHmo2uiK6hZdpld0eSt5eIXKMUW1i4Yc-_Hml9MFuHS-AZsKipQf56FF6pdNGKE8H/exec";
+    const TARGET_TIMEZONE = "Asia/Kolkata";
 
-  // Helper function to extract detailed date/time info.
-  function getFormattedTime(date) {
-      return {
-          full_date: date.toLocaleString("en-US", { timeZone: TARGET_TIMEZONE }),
-          year: date.getFullYear(),
-          month: date.getMonth() + 1,
-          day: date.getDate(),
-          hour: date.getHours(),
-          minute: date.getMinutes(),
-          second: date.getSeconds()
-      };
-  }
+    function getFormattedTime(date) {
+        return {
+            full_date: date.toLocaleString("en-US", { timeZone: TARGET_TIMEZONE }),
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate(),
+            hour: date.getHours(),
+            minute: date.getMinutes(),
+            second: date.getSeconds()
+        };
+    }
 
-  // Helper: Get user's IP and approximate location via ipapi.co.
-  async function getUserLocation() {
-      try {
-          let response = await fetch("https://ipapi.co/json");
-          let data = await response.json();
-          return {
-              ip: data.ip || "Unknown",
-              city: data.city || "Unknown",
-              country: data.country_name || "Unknown",
-              latitude: data.latitude || "Unknown",
-              longitude: data.longitude || "Unknown"
-          };
-      } catch (error) {
-          console.error("Error fetching location:", error);
-          return { ip: "Unknown", city: "Unknown", country: "Unknown", latitude: "Unknown", longitude: "Unknown" };
-      }
-  }
+    // Fetch user's IP and location from multiple public APIs
+    async function getUserLocation() {
+        const apis = [
+            "https://ipapi.co/json/",
+            "https://api.ipregistry.co/?key=tryout",
+            "https://ipwho.is/",
+            "https://ipinfo.io/json",
+            "https://ifconfig.me/all.json"
+        ];
+        for (let api of apis) {
+            try {
+                let response = await fetch(api);
+                let data = await response.json();
+                if (data.ip && (data.city || data.loc)) {
+                    return {
+                        ip_address: data.ip || "Unknown",
+                        city: data.city || "Unknown",
+                        country: data.country_name || data.country || "Unknown",
+                        latitude: data.latitude || (data.loc ? data.loc.split(",")[0] : "Unknown"),
+                        longitude: data.longitude || (data.loc ? data.loc.split(",")[1] : "Unknown")
+                    };
+                }
+            } catch (error) {
+                console.warn(`Failed to fetch from ${api}:`, error);
+            }
+        }
+        return { ip_address: "Unknown", city: "Unknown", country: "Unknown", latitude: "Unknown", longitude: "Unknown" };
+    }
 
-  // Helper: Get extra device & network details.
-  function getDeviceInfo() {
-      let ua = navigator.userAgent;
-      // Browser detection
-      let browser = "Other";
-      if (/chrome/i.test(ua)) {
-          browser = "Chrome";
-      } else if (/firefox/i.test(ua)) {
-          browser = "Firefox";
-      } else if (/safari/i.test(ua) && !/chrome/i.test(ua)) {
-          browser = "Safari";
-      }
-      // OS detection
-      let os = "Other";
-      if (/Windows/i.test(ua)) {
-          os = "Windows";
-      } else if (/Mac/i.test(ua)) {
-          os = "MacOS";
-      } else if (/Linux/i.test(ua)) {
-          os = "Linux";
-      }
-      let device_type = /Mobi/i.test(ua) ? "Mobile" : "Desktop";
-      let connection = navigator.connection ? navigator.connection.effectiveType : "Unknown";
-      return {
-          user_agent: ua,
-          browser: browser,
-          os: os,
-          device_type: device_type,
-          screen_size: `${window.innerWidth}x${window.innerHeight}`,
-          connection: connection
-      };
-  }
+    function getDeviceInfo() {
+        let ua = navigator.userAgent;
+        let browser = /chrome/i.test(ua) ? "Chrome" : /firefox/i.test(ua) ? "Firefox" : /safari/i.test(ua) ? "Safari" : "Other";
+        let os = /Windows/i.test(ua) ? "Windows" : /Mac/i.test(ua) ? "MacOS" : /Linux/i.test(ua) ? "Linux" : "Other";
+        let device_type = /Mobi/i.test(ua) ? "Mobile" : "Desktop";
+        let connection = navigator.connection ? navigator.connection.effectiveType : "Unknown";
+        return {
+            user_agent: ua,
+            browser: browser,
+            os: os,
+            device_type: device_type,
+            screen_size: `${window.innerWidth}x${window.innerHeight}`,
+            connection: connection
+        };
+    }
 
-  // Retrieve IP-based location and device info.
-  let locationData = await getUserLocation();
-  let deviceData = getDeviceInfo();
+    let locationData = await getUserLocation();
+    let deviceData = getDeviceInfo();
 
-  // Function to send tracking data to your Google Apps Script.
-  function sendTrackingData(data, useBeacon = false) {
-      console.log("Sending Data:", data);
-      if (useBeacon && navigator.sendBeacon) {
-          let success = navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
-          if (!success) {
-              console.warn("sendBeacon failed, using fetch fallback.");
-              fetch(GOOGLE_SHEET_API, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(data)
-              }).catch(error => console.error("Tracking Error:", error));
-          }
-      } else {
-          fetch(GOOGLE_SHEET_API, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data)
-          }).catch(error => console.error("Tracking Error:", error));
-      }
-  }
+    function sendTrackingData(data, useBeacon = false) {
+        console.log("Sending Data:", data);
+        if (useBeacon && navigator.sendBeacon) {
+            let success = navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
+            if (!success) {
+                console.warn("sendBeacon failed, using fetch fallback.");
+                fetch(GOOGLE_SHEET_API, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                }).catch(error => console.error("Tracking Error:", error));
+            }
+        } else {
+            fetch(GOOGLE_SHEET_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            }).catch(error => console.error("Tracking Error:", error));
+        }
+    }
 
-  // TRACK: Page Load Event
-  let currentTime = getFormattedTime(new Date());
-  let pageLoadData = {
-      ...currentTime,
-      session_id: sessionId,
-      page_url: window.location.href,
-      action: "page_load",
-      element: "",
-      time_spent: "",
-      referrer: document.referrer || "Direct",
-      ip_address: locationData.ip,
-      city: locationData.city,
-      country: locationData.country,
-      latitude: locationData.latitude,
-      longitude: locationData.longitude,
-      ...deviceData
-  };
-  sendTrackingData(pageLoadData);
+    let currentTime = getFormattedTime(new Date());
+    let pageLoadData = {
+        ...currentTime,
+        session_id: sessionId,
+        page_url: window.location.href,
+        action: "page_load",
+        element: "",
+        time_spent: "",
+        referrer: document.referrer || "Direct",
+        ...locationData,
+        ...deviceData
+    };
+    sendTrackingData(pageLoadData);
 
-  // TRACK: Click Event
-  document.body.addEventListener("click", (event) => {
-      sendTrackingData({
-          ...getFormattedTime(new Date()),
-          session_id: sessionId,
-          page_url: window.location.href,
-          action: "click",
-          element: event.target.tagName,
-          time_spent: "",
-          referrer: document.referrer || "Direct",
-          ip_address: locationData.ip,
-          city: locationData.city,
-          country: locationData.country,
-          latitude: locationData.latitude,
-          longitude: locationData.longitude,
-          ...deviceData
-      });
-  });
+    document.body.addEventListener("click", (event) => {
+        sendTrackingData({
+            ...getFormattedTime(new Date()),
+            session_id: sessionId,
+            page_url: window.location.href,
+            action: "click",
+            element: event.target.tagName,
+            time_spent: "",
+            referrer: document.referrer || "Direct",
+            ...locationData,
+            ...deviceData
+        });
+    });
 
-  // TRACK: Page Exit Event
-  window.addEventListener("beforeunload", () => {
-      let timeSpent = Date.now() - startTime;
-      sendTrackingData({
-          ...getFormattedTime(new Date()),
-          session_id: sessionId,
-          page_url: window.location.href,
-          action: "page_exit",
-          element: "",
-          time_spent: timeSpent,
-          referrer: document.referrer || "Direct",
-          ip_address: locationData.ip,
-          city: locationData.city,
-          country: locationData.country,
-          latitude: locationData.latitude,
-          longitude: locationData.longitude,
-          ...deviceData
-      }, true);
-  });
+    window.addEventListener("beforeunload", () => {
+        let timeSpent = Date.now() - startTime;
+        sendTrackingData({
+            ...getFormattedTime(new Date()),
+            session_id: sessionId,
+            page_url: window.location.href,
+            action: "page_exit",
+            element: "",
+            time_spent: timeSpent,
+            referrer: document.referrer || "Direct",
+            ...locationData,
+            ...deviceData
+        }, true);
+    });
 });
 </script>
 
