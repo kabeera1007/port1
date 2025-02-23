@@ -586,140 +586,162 @@ s0.parentNode.insertBefore(s1,s0);
   </script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let startTime = Date.now();
-        
-        document.body.addEventListener("click", (event) => {
-            fetch("/track", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    page_url: window.location.pathname,
-                    action: "click",
-                    element: event.target.tagName
-                })
-            });
-        });
-
-        window.addEventListener("beforeunload", () => {
-            let timeSpent = Date.now() - startTime;
-            fetch("/track", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    page_url: window.location.pathname,
-                    time_spent: timeSpent,
-                    action: "page_exit"
-                })
-            });
-        });
-    });
-</script>
-
-  <script>
   document.addEventListener("DOMContentLoaded", async () => {
-    let startTime = Date.now();
-    let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem("session_id", sessionId);
+  let startTime = Date.now();
+  let sessionId = sessionStorage.getItem("session_id") || Math.random().toString(36).substr(2, 9);
+  sessionStorage.setItem("session_id", sessionId);
 
-    // Ensure your Google Apps Script is deployed with "Anyone, even anonymous" permissions.
-    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzRXQleoSXgtY_b4NBGPeWuy24vzVbXmiZLun0TrHlaecCeuotE_0AQaUS7yQbKhw57/exec";
-    const TARGET_TIMEZONE = "Asia/Kolkata"; // India time zone
+  // Replace with your deployed Google Apps Script URL.
+  const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycby83T06ST95Z1qJrUhHM8hfYqp8BZ9iTDddki1OF2kRd_aLxp3OhLWUmlcX_kWOfO0tIQ/exec";
+  const TARGET_TIMEZONE = "Asia/Kolkata"; // India time zone
 
-    // Helper function to convert current date to target time zone as a formatted string
-    function convertToTargetTZ(date) {
-        return new Date(date).toLocaleString("en-US", { timeZone: TARGET_TIMEZONE });
-    }
+  // Helper function to extract detailed date/time info.
+  function getFormattedTime(date) {
+      return {
+          full_date: date.toLocaleString("en-US", { timeZone: TARGET_TIMEZONE }),
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+          day: date.getDate(),
+          hour: date.getHours(),
+          minute: date.getMinutes(),
+          second: date.getSeconds()
+      };
+  }
 
-    async function getUserIP() {
-        const endpoints = [
-            "https://api.myip.com",
-            "https://api64.ipify.org?format=json",
-            "https://ipapi.co/json"
-        ];
-        for (let url of endpoints) {
-            try {
-                let response = await fetch(url);
-                let data = await response.json();
-                if (data && (data.ip || data.IP)) {
-                    return data.ip || data.IP;
-                }
-            } catch (error) {
-                console.error(`Error fetching from ${url}:`, error);
-            }
-        }
-        return "Unknown";
-    }
+  // Helper: Get user's IP and approximate location via ipapi.co.
+  async function getUserLocation() {
+      try {
+          let response = await fetch("https://ipapi.co/json");
+          let data = await response.json();
+          return {
+              ip: data.ip || "Unknown",
+              city: data.city || "Unknown",
+              country: data.country_name || "Unknown",
+              latitude: data.latitude || "Unknown",
+              longitude: data.longitude || "Unknown"
+          };
+      } catch (error) {
+          console.error("Error fetching location:", error);
+          return { ip: "Unknown", city: "Unknown", country: "Unknown", latitude: "Unknown", longitude: "Unknown" };
+      }
+  }
 
-    function sendTrackingData(data, useBeacon = false) {
-        console.log("Sending Data:", data);
-        if (useBeacon && navigator.sendBeacon) {
-            let success = navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
-            if (!success) {
-                console.warn("sendBeacon failed, using fetch fallback.");
-                fetch(GOOGLE_SHEET_API, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                }).catch(error => console.error("Tracking Error:", error));
-            }
-        } else {
-            fetch(GOOGLE_SHEET_API, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            }).catch(error => console.error("Tracking Error:", error));
-        }
-    }
+  // Helper: Get extra device & network details.
+  function getDeviceInfo() {
+      let ua = navigator.userAgent;
+      // Browser detection
+      let browser = "Other";
+      if (/chrome/i.test(ua)) {
+          browser = "Chrome";
+      } else if (/firefox/i.test(ua)) {
+          browser = "Firefox";
+      } else if (/safari/i.test(ua) && !/chrome/i.test(ua)) {
+          browser = "Safari";
+      }
+      // OS detection
+      let os = "Other";
+      if (/Windows/i.test(ua)) {
+          os = "Windows";
+      } else if (/Mac/i.test(ua)) {
+          os = "MacOS";
+      } else if (/Linux/i.test(ua)) {
+          os = "Linux";
+      }
+      let device_type = /Mobi/i.test(ua) ? "Mobile" : "Desktop";
+      let connection = navigator.connection ? navigator.connection.effectiveType : "Unknown";
+      return {
+          user_agent: ua,
+          browser: browser,
+          os: os,
+          device_type: device_type,
+          screen_size: `${window.innerWidth}x${window.innerHeight}`,
+          connection: connection
+      };
+  }
 
-    let userIP = await getUserIP();
-    let timestamp = convertToTargetTZ(new Date());
-    let pageLoadData = {
-        timestamp: timestamp,
-        session_id: sessionId,
-        page_url: window.location.href,
-        action: "page_load",
-        element: "",
-        time_spent: "",
-        scroll_depth: "",
-        user_agent: navigator.userAgent,
-        browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
-        screen_size: `${window.innerWidth}x${window.innerHeight}`,
-        referrer: document.referrer || "Direct",
-        ip_address: userIP
-    };
-    sendTrackingData(pageLoadData);
+  // Retrieve IP-based location and device info.
+  let locationData = await getUserLocation();
+  let deviceData = getDeviceInfo();
 
-    document.body.addEventListener("click", (event) => {
-        sendTrackingData({
-            timestamp: convertToTargetTZ(new Date()),
-            session_id: sessionId,
-            page_url: window.location.href,
-            action: "click",
-            element: event.target.tagName,
-            user_agent: navigator.userAgent,
-            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
-            screen_size: `${window.innerWidth}x${window.innerHeight}`,
-            referrer: document.referrer || "Direct",
-            ip_address: userIP
-        });
-    });
+  // Function to send tracking data to your Google Apps Script.
+  function sendTrackingData(data, useBeacon = false) {
+      console.log("Sending Data:", data);
+      if (useBeacon && navigator.sendBeacon) {
+          let success = navigator.sendBeacon(GOOGLE_SHEET_API, JSON.stringify(data));
+          if (!success) {
+              console.warn("sendBeacon failed, using fetch fallback.");
+              fetch(GOOGLE_SHEET_API, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data)
+              }).catch(error => console.error("Tracking Error:", error));
+          }
+      } else {
+          fetch(GOOGLE_SHEET_API, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data)
+          }).catch(error => console.error("Tracking Error:", error));
+      }
+  }
 
-    window.addEventListener("beforeunload", () => {
-        let timeSpent = Date.now() - startTime;
-        sendTrackingData({
-            timestamp: convertToTargetTZ(new Date()),
-            session_id: sessionId,
-            page_url: window.location.href,
-            action: "page_exit",
-            time_spent: timeSpent,
-            user_agent: navigator.userAgent,
-            browser: navigator.userAgent.includes("Chrome") ? "Chrome" : "Other",
-            screen_size: `${window.innerWidth}x${window.innerHeight}`,
-            referrer: document.referrer || "Direct",
-            ip_address: userIP
-        }, true);
-    });
+  // TRACK: Page Load Event
+  let currentTime = getFormattedTime(new Date());
+  let pageLoadData = {
+      ...currentTime,
+      session_id: sessionId,
+      page_url: window.location.href,
+      action: "page_load",
+      element: "",
+      time_spent: "",
+      referrer: document.referrer || "Direct",
+      ip_address: locationData.ip,
+      city: locationData.city,
+      country: locationData.country,
+      latitude: locationData.latitude,
+      longitude: locationData.longitude,
+      ...deviceData
+  };
+  sendTrackingData(pageLoadData);
+
+  // TRACK: Click Event
+  document.body.addEventListener("click", (event) => {
+      sendTrackingData({
+          ...getFormattedTime(new Date()),
+          session_id: sessionId,
+          page_url: window.location.href,
+          action: "click",
+          element: event.target.tagName,
+          time_spent: "",
+          referrer: document.referrer || "Direct",
+          ip_address: locationData.ip,
+          city: locationData.city,
+          country: locationData.country,
+          latitude: locationData.latitude,
+          longitude: locationData.longitude,
+          ...deviceData
+      });
+  });
+
+  // TRACK: Page Exit Event
+  window.addEventListener("beforeunload", () => {
+      let timeSpent = Date.now() - startTime;
+      sendTrackingData({
+          ...getFormattedTime(new Date()),
+          session_id: sessionId,
+          page_url: window.location.href,
+          action: "page_exit",
+          element: "",
+          time_spent: timeSpent,
+          referrer: document.referrer || "Direct",
+          ip_address: locationData.ip,
+          city: locationData.city,
+          country: locationData.country,
+          latitude: locationData.latitude,
+          longitude: locationData.longitude,
+          ...deviceData
+      }, true);
+  });
 });
 </script>
 
